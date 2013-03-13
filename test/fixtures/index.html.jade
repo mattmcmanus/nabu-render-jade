@@ -1,0 +1,10 @@
+extend _layouts/default
+
+block content
+  #blog-index
+    h2 BLOGZ!
+    for post in site.posts
+      article(class=post.layout)
+        h1
+          a(href=post.permalink)=post.title
+        !=post.content

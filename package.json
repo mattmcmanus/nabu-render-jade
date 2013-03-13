@@ -1,8 +1,8 @@
 {
-  "name": "nabu-jade",
+  "name": "nabu-render-jade",
   "description": "Generic pages plugin nabu",
   "version": "0.1.0",
-  "homepage": "https://github.com/mattmcmanus/nabu-jade",
+  "homepage": "https://github.com/mattmcmanus/nabu-render-jade",
   "author": {
     "name": "Matt McManus",
     "email": "mattmcmanus@gmail.com",
@@ -10,18 +10,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/mattmcmanus/nabu-jade.git"
+    "url": "git://github.com/mattmcmanus/nabu-render-jade.git"
   },
   "bugs": {
-    "url": "https://github.com/mattmcmanus/nabu-jade/issues"
+    "url": "https://github.com/mattmcmanus/nabu-render-jade/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/mattmcmanus/nabu-jade/blob/master/LICENSE-MIT"
+      "url": "https://github.com/mattmcmanus/nabu-render-jade/blob/master/LICENSE-MIT"
     }
   ],
-  "main": "nabu-jade",
+  "main": "nabu-render-jade",
   "engines": {
     "node": ">= 0.8.0"
   },
@@ -30,7 +30,9 @@
   },
   "dependencies": {
     "async": "~0.2.6",
-    "mkdirp": "~0.3.5"
+    "mkdirp": "~0.3.5",
+    "underscore": "~1.4.4",
+    "jade": "~0.28.2"
   },
   "peerDependencies": {
     "nabu": "0.1.x"
@@ -39,7 +41,8 @@
     "grunt-contrib-jshint": "~0.1.1",
     "grunt-contrib-nodeunit": "~0.1.2",
     "grunt-contrib-watch": "~0.2.0",
-    "grunt": "~0.4.0"
+    "grunt": "~0.4.0",
+    "rimraf": "~2.1.4"
   },
   "keywords": []
 }
