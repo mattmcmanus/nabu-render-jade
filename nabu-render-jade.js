@@ -26,9 +26,9 @@ var templateExtension = '.jade';
  */
 function render(nabu, callback) {
   async.parallel([
-    // function(done){
-    //   renderTemplates(nabu, done);
-    // },
+    function(done){
+      renderTemplates(nabu, done);
+    },
     function(done){
       renderContent(nabu, done);
     }
@@ -45,15 +45,15 @@ function render(nabu, callback) {
  * @param  {Function} callback [description]
  */
 function renderTemplates(nabu, callback) {
-  var templateFiles = nabu.files.find(nabu._files, function(file){ 
-    return (path.extname(file) === templateExtension); 
+  var templateFiles = nabu.files.find(nabu._files, function(file){
+    return (path.extname(file) === templateExtension && file.indexOf('/_') ===  -1); 
   });
-
+  
   var layouts = loadLayouts(templateFiles);
-
+  
   for (var layout in layouts) {
     var html = layouts[layout].render({site: nabu.site});
-    var target = nabu.files.targetPath(nabu, layout.src);
+    var target = nabu.files.targetPath(nabu, path.basename(layouts[layout].src, templateExtension));
     fs.writeFile(target, html, callback);
   }
 }

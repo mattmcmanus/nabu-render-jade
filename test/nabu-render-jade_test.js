@@ -30,7 +30,7 @@ var nabu = require('../../nabu/lib/nabu');
 
 nabu._files = ['./test/fixtures/index.html.jade', './test/fixtures/_layouts/default.jade', './test/fixtures/_layouts/post.jade'];
 nabu.site.posts = [{ sourcePath: './test/fixtures/_posts/2012-12-1-sample1.md',
-    permalink: 'sample-post/',
+    permalink: '2012-12-1-sample1/index.html',
     targetPath: './test/fixtures/_site/2012-12-1-sample1/index.html',
     layout: 'post',
     title: 'Sample Post',
@@ -58,7 +58,7 @@ exports['nabu'] = {
     
   },
   tearDown: function(done) {
-    // rimraf(nabu.site.destination, done);
-    done();
+    rimraf(nabu.site.destination, done);
+    // done();
   }
 };
