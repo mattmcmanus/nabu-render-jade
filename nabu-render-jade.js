@@ -22,20 +22,15 @@ var templateExtension = '.jade';
  * Render all the things!
  * 
  * @param  {Object}   nabu     The full nabu object
- * @param  {Function} callback [description]
+ * @param  {Function} callback 
  */
 function render(nabu, callback) {
   async.parallel([
-    function(done){
-      renderTemplates(nabu, done);
-    },
-    function(done){
-      renderContent(nabu, done);
-    }
+    async.apply(renderTemplates, nabu),
+    async.apply(renderContent, nabu),
   ],
   function(err, results){
-    // console.log("RENDER COMPLETE");
-    callback(err, nabu);
+    callback(err, results);
   });
 }
 
@@ -50,12 +45,18 @@ function renderTemplates(nabu, callback) {
   });
   
   var layouts = loadLayouts(templateFiles);
-  
-  for (var layout in layouts) {
-    var html = layouts[layout].render({site: nabu.site});
-    var target = nabu.files.targetPath(nabu, path.basename(layouts[layout].src, templateExtension));
-    fs.writeFile(target, html, callback);
-  }
+
+  var eachLayout = function(layout, next) {
+    nabu.log.info('Rendering ' + layout.src);
+    var html = layout.render({site: nabu.site});
+    var target = nabu.files.targetPath(nabu, path.basename(layout.src, templateExtension));
+    fs.writeFile(target, html, next);
+  };
+
+  async.each(layouts, eachLayout, function(err){
+      callback(err);
+    }
+  );
 }
 
 /**
@@ -63,12 +64,8 @@ function renderTemplates(nabu, callback) {
  * 
  * @param  {[type]}   nabu     [description]
  * @param  {Function} callback [description]
- * @return {[type]}            [description]
  */
 function renderContent(nabu, callback) {
-  // 1. Load all layouts and compile them to functions
-  // 2. Load all generic templates, compile to functions and render
-  // 3. Render each individual piece of content
   var files = [];
 
   // Pull the layout files out of _file list
@@ -83,20 +80,23 @@ function renderContent(nabu, callback) {
     }
   }
 
-  files = _.flatten(files);
+  // The above loop returns clusters of files for each 
+  // collection. Flatten it to one array
+  files = _.flatten(files); 
 
   // Go through each file and render it
-  async.each(files, 
-    function(file) {
-      renderFile(nabu, file, callback);
-    }, 
-    function(err){
+  var eachFile = function(file, next) {
+    renderFile(nabu, file, next);
+  };
+
+  async.each(files, eachFile, function(err){
       callback(err);
     }
   );
 }
 
 function renderFile(nabu, file, callback) {
+  nabu.log.info('Rendering '+file.sourcePath);
   var options = {};
 
   // Make sure the layout file specified in the front matter exists
@@ -107,24 +107,24 @@ function renderFile(nabu, file, callback) {
   options.page = file;
   options.site = nabu.site;
 
-  if (file.title) {
-    options.title = file.title;
-  }
+  if (file.title) { options.title = file.title; }
+  if (file.content) { options.content = file.content; }
 
-  if (file.content) {
-    options.content = file.content;
-  }
-
+  // Make sure all the folders are made
   mkdirp.sync(path.dirname(file.targetPath));
 
   var html = nabu.site.layouts[file.layout].render(options);
   
   fs.writeFile(file.targetPath, html, function(err){
-    // console.log("WRITTEN");
     callback(err);
   });
 }
 
+/**
+ * A quick check to see if a file has declared a layout
+ * @param  {Object}  item
+ * @return {Boolean}
+ */
 function hasLayout(item){
   return !_.isUndefined(item.layout);
 }

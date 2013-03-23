@@ -24,8 +24,6 @@ var nabu_render = require('../nabu-render-jade.js'),
     test.ifError(value)
 */
 
-console.log(process.cwd());
-
 var nabu = require('../../nabu/lib/nabu');
 
 nabu._files = ['./test/fixtures/index.html.jade', './test/fixtures/_layouts/default.jade', './test/fixtures/_layouts/post.jade'];
@@ -49,7 +47,7 @@ exports['nabu'] = {
   'parse': function(test) {
     test.expect(2); // There should be two blog posts to test
     
-    nabu_render(nabu, function(err, nabu){
+    nabu_render(nabu, function(err, results){
       test.ok(nabu.site, "There shold be a nabu posts object");
       test.ok(fs.existsSync(nabu.site.destination), "_site dir exists");
       // test.ok(fs.existsSync(nabu.site.destination + '/index.html'), "The homepage exists");
