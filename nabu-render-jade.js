@@ -18,13 +18,17 @@ var fs = require('fs'),
 
 var templateExtension = '.jade';
 
+
 /**
  * Render all the things!
  * 
  * @param  {Object}   nabu     The full nabu object
  * @param  {Function} callback 
  */
+
 function render(nabu, callback) {
+  nabu.log.info('Rendering:');
+
   async.parallel([
     async.apply(renderTemplates, nabu),
     async.apply(renderContent, nabu),
@@ -34,30 +38,36 @@ function render(nabu, callback) {
   });
 }
 
+
 /**
  * Render all Jade templates that are not layouts
+ * 
  * @param  {Object}   nabu     The full nabu object
  * @param  {Function} callback [description]
  */
+
 function renderTemplates(nabu, callback) {
   var templateFiles = nabu.files.find(nabu._files, function(file){
     return (path.extname(file) === templateExtension && file.indexOf('/_') ===  -1); 
   });
   
   var layouts = loadLayouts(templateFiles);
-
+  
   var eachLayout = function(layout, next) {
-    nabu.log.info('Rendering ' + layout.src);
+    nabu.log.info(' -> ' + layout.src);
     var html = layout.render({site: nabu.site});
     var target = nabu.files.targetPath(nabu, path.basename(layout.src, templateExtension));
+    
+    mkdirp.sync(path.dirname(target));
+    
     fs.writeFile(target, html, next);
   };
 
-  async.each(layouts, eachLayout, function(err){
-      callback(err);
-    }
-  );
+  async.each(_.toArray(layouts), eachLayout, function(err){
+    callback(err);
+  });
 }
+
 
 /**
  * Render generic templates (such as the blog index) and each individual file
@@ -65,6 +75,7 @@ function renderTemplates(nabu, callback) {
  * @param  {[type]}   nabu     [description]
  * @param  {Function} callback [description]
  */
+
 function renderContent(nabu, callback) {
   var files = [];
 
@@ -90,13 +101,21 @@ function renderContent(nabu, callback) {
   };
 
   async.each(files, eachFile, function(err){
-      callback(err);
-    }
-  );
+    callback(err);
+  });
 }
 
+
+/**
+ * Render and individual file
+ * 
+ * @param  {Object}   nabu     Full nabu object
+ * @param  {Object}   file     Object for a single parsed file
+ * @param  {Function} callback
+ */
+
 function renderFile(nabu, file, callback) {
-  nabu.log.info('Rendering '+file.sourcePath);
+  nabu.log.info(' -> '+file.sourcePath);
   var options = {};
 
   // Make sure the layout file specified in the front matter exists
@@ -120,18 +139,26 @@ function renderFile(nabu, file, callback) {
   });
 }
 
+
 /**
  * A quick check to see if a file has declared a layout
+ * 
  * @param  {Object}  item
  * @return {Boolean}
  */
+
 function hasLayout(item){
   return !_.isUndefined(item.layout);
 }
 
+
 /**
  * Iterate over each layout path and create compiled jade template functions
+ * 
+ * @param  {[String]} layoutsPaths An Array of paths
+ * @return {Object}                 An object full of compiled jade functions
  */
+
 function loadLayouts(layoutsPaths) {
   var layouts = {};
 

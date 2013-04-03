@@ -1,0 +1,16 @@
+doctype xml
+feed(xmlns="http://www.w3.org/2005/Atom")
+  title= site.title
+  link(href=site.url+"/atom.xml", rel="self")
+  link(href=site.url)
+  updated=site.time
+  id=site.url 
+  author
+    name= site.author
+    //if site.email %}email![CDATA[ site.email
+  
+  generator uri="http://octopress.org/"Octopress
+
+  for post in site.posts
+    entry
+      title(type="html")= post.title
