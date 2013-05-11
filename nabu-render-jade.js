@@ -147,7 +147,7 @@ function renderFile(nabu, file, callback) {
  * @return {Boolean}
  */
 
-function hasLayout(item){
+function hasLayout(item) {
   return !_.isUndefined(item.layout);
 }
 
