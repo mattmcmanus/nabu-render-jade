@@ -9,8 +9,7 @@
 
 var fs = require('fs'),
     path = require('path'),
-    jade = require('jade'),
-    _ = require('underscore');
+    jade = require('jade');
 
 exports.templateExtension = '.jade';
 
