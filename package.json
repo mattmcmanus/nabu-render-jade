@@ -1,6 +1,6 @@
 {
   "name": "nabu-render-jade",
-  "description": "Generic pages plugin nabu",
+  "description": "Jade support for nabu",
   "version": "0.1.0",
   "homepage": "https://github.com/mattmcmanus/nabu-render-jade",
   "author": {
