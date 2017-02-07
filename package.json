@@ -29,13 +29,13 @@
     "test": "grunt nodeunit"
   },
   "dependencies": {
-    "jade": "~0.28.2"
+    "jade": "~1.11.0"
   },
   "peerDependencies": {
     "nabu": "0.1.x"
   },
   "devDependencies": {
-    "rimraf": "~2.1.4"
+    "rimraf": "~2.5.4"
   },
   "keywords": []
 }
